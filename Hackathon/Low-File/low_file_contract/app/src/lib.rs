@@ -2,7 +2,8 @@
 
 // Importamos los módulos necesarios de Sails-RS
 use sails_rs::prelude::*;
-
+use crate::states::low_file_state::LowFileState;
+use gstd::collections::HashMap; 
 // Importamos los módulos internos
 pub mod states;
 pub mod services;
@@ -19,7 +20,7 @@ impl TrafficLightProgram {
     // Constructor de la aplicación (se llama una vez por vida de la aplicación)
     pub fn new() -> Self {
         // Inicializamos el estado si es necesario
-        states::::LowFileState::init_state ();
+        LowFileState::init_state ();
 
         Self
     }

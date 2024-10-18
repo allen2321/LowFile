@@ -7,9 +7,8 @@ license.workspace = true
 [dependencies]
 gstd.workspace = true
 sails-rs.workspace = true
-argon2 = "0.6.0-pre.1"
-rand_core = "0.6"
-rand = "0.8"  # Versión compatible con RngCore y OsRng
-
-
-
+rsa = "0.5.0"        # Para el manejo de claves RSA
+sha2 = "0.9"         # Para el hash SHA-256
+rand = "0.8"         # Para la generación aleatoria de claves
+hex = "0.4"          # Para manejar la codificación hexadecimal (convertir el hash a cadena)
+base64 = "0.13"      # Para manejar la codificación base64 (convert)

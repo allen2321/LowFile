@@ -11,13 +11,13 @@ pub mod services;
 use services::low_file_service::LowFileService;
 
 // Traffic light program struct to build the program (there can only be one per contract)
-pub struct LowFileProgram;
+pub struct TrafficLightProgram;
 
 // Traffic light program, it host one or more services and it expose them to the 
 // externar consumer.
 // Only one program is allowed per application
 #[program]
-impl LowFileProgram {
+impl TrafficLightProgram {
     // Application constructor (it is an associated function)
     // It can be called once per application lifetime.
     pub fn new() -> Self {
@@ -33,7 +33,7 @@ impl LowFileProgram {
     // It has "message routing", This will change the way a service will be called 
     // (if omitted, the method name will be used, in this case TrafficLightSvc).
     #[route("TrafficLight")]
-    pub fn low_file_svc(&self) -> LowFileService {
+    pub fn traffic_light_svc(&self) -> LowFileService {
         LowFileService::new("".to_string(),0,"".to_string(),"".to_string(),"".to_string(),Vec::new())
     }
 }

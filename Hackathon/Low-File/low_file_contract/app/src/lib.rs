@@ -1,37 +1,39 @@
 #![no_std]
 
-// Importamos los módulos necesarios de Sails-RS
+// necesary crates
 use sails_rs::prelude::*;
-use crate::states::low_file_state::LowFileState;
-use gstd::collections::HashMap; 
-// Importamos los módulos internos
+
+// import our modules 
 pub mod states;
 pub mod services;
 
-// Importamos el servicio para utilizarlo en el programa
+// Import service to be used for the program
 use services::low_file_service::LowFileService;
 
-// Traffic light program struct para construir el programa (sólo puede haber uno por contrato)
+// Traffic light program struct to build the program (there can only be one per contract)
 pub struct TrafficLightProgram;
 
-// Implementación del programa principal que expone los servicios
+// Traffic light program, it host one or more services and it expose them to the 
+// externar consumer.
+// Only one program is allowed per application
 #[program]
 impl TrafficLightProgram {
-    // Constructor de la aplicación (se llama una vez por vida de la aplicación)
+    // Application constructor (it is an associated function)
+    // It can be called once per application lifetime.
     pub fn new() -> Self {
-        // Inicializamos el estado si es necesario
-        LowFileState::init_state ();
+        // Init the state
+        //LowFileService::seed();
 
         Self
     }
 
-    // Método para exponer el servicio TrafficLight con soporte para DID y autenticación
+    // Method working with "&self", having no other parameters are treated as exposed
+    // service constructors, and are called each time when an incoming request message 
+    // needs be dispatched to a selected service
+    // It has "message routing", This will change the way a service will be called 
+    // (if omitted, the method name will be used, in this case TrafficLightSvc).
     #[route("TrafficLight")]
     pub fn traffic_light_svc(&self) -> LowFileService {
-        LowFileService::new(
-            "".to_string(), 0, "".to_string(), 
-            "".to_string(), "".to_string(), Vec::new(), 
-            "".to_string(),
-        )
+        LowFileService::new("".to_string(), "".to_string(), 0, "".to_string(), "".to_string(), "".to_string(), Vec::new(),"".to_string(), Vec::new())
     }
 }

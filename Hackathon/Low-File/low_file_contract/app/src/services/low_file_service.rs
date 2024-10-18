@@ -1,97 +1,77 @@
-// Importamos las dependencias necesarias de sails_rs
-use sails_rs::prelude::*;
-use rsa::{RsaPrivateKey, RsaPublicKey, PaddingScheme};
-use sha2::{Sha256, Digest};
-use rsa::pkcs1::ToRsaPublicKey;
-use base64::{encode, decode};
-use rand::rngs::OsRng;
+// Importa las dependencias necesarias de sails_rs
+use sails_rs::{
+    prelude::*,
+    gstd::msg
+};
 
-// Variable estática mutable para el estado del contrato
+// Variable estática mutable para el estado del ontrato
 pub static mut LOWFILE_STATE: Option<LowFileService> = None;
 
-// Estructura para el servicio LowFile con soporte DID y hash
+// Estructura para el estado de LowFile
 #[derive(Clone, Default)]
 pub struct LowFileService {
-    pub nombre: String,
-    pub edad: u32,
-    pub profesion: String,
-    pub titulacion: String,
-    pub ubicacion: String,
-    pub certificaciones: Vec<String>,
-    pub did: String,
-    pub password_hash: String,
+    pub nombre: String, // Nombre del usuario
+    pub contraseña: String, // Contraseña
+    pub edad: u32,      // Edad del usuario
+    pub profesion: String, // Profesión del usuario
+    pub titulacion: String, // Titulación del usuario
+    pub ubicacion: String, // Ubicación del usuario
+    pub certificaciones: Vec<String>, // Lista de certificaciones del usuario
+    pub identi: String, //Añade un identificador
+    pub public_key: Vec<u8>, //Añade un vector
 }
 
-// Implementación del servicio LowFile con soporte DID y RSA hash
+// Implementación del servicio LowFile
 #[service]
 impl LowFileService {
-    /// Constructor del servicio LowFile con DID y hash.
-    pub fn new(
-        nombre: String, edad: u32, profesion: String, titulacion: String, 
-        ubicacion: String, certificaciones: Vec<String>, password: String
-    ) -> Self {
-        // Generamos el DID único y el hash de la contraseña
-        let (did, password_hash) = Self::generate_did_and_hash(&password);
+    /// Constructor del servicio LowFile.
+    pub fn new(nombre: String, contraseña: String, edad: u32, profesion: String, titulacion: String, ubicacion: String, certificaciones: Vec<String>, identi: String, public_key: Vec<u8>) -> Self {
         Self {
             nombre,
+            contraseña,
             edad,
             profesion,
             titulacion,
             ubicacion,
             certificaciones,
-            did,
-            password_hash,
+            identi,
+            public_key,
         }
     }
 
-    /// Método para generar el DID y el hash de la contraseña usando RSA.
-    fn generate_did_and_hash(password: &str) -> (String, String) {
-        // Generar par de claves RSA
-        let mut rng = OsRng;
-        let bits = 2048;
-        let private_key = RsaPrivateKey::new(&mut rng, bits).expect("failed to generate a key");
-        let public_key = RsaPublicKey::from(&private_key);
-
-        // Crear el DID a partir de la clave pública
-        let did = format!("did:example:{}", encode(public_key.to_pkcs1_der().unwrap()));
-
-        // Generar el hash de la contraseña
-        let mut hasher = Sha256::new();
-        hasher.update(password.as_bytes());
-        let result = hasher.finalize();
-        let password_hash = encode(result);
-
-        (did, password_hash)
+    /// Método para inicializar el estado global de LowFile.
+    pub fn init_state() {
+        unsafe {
+            LOWFILE_STATE = Some(LowFileService::default());
+        };
     }
 
-    /// Método para verificar el hash de la contraseña.
-    pub fn verify_password(&self, password: String) -> bool {
-        let mut hasher = Sha256::new();
-        hasher.update(password.as_bytes());
-        let result = hasher.finalize();
-        let password_hash = encode(result);
-        self.password_hash == password_hash
-    }
-
-    /// Llamada remota para establecer los datos del usuario, incluyendo DID y hash.
+    /// Llamada remota para establecer los datos del usuario.
     pub fn set_user_data(
         &mut self,
-        nombre: String, edad: u32, profesion: String, titulacion: String, 
-        ubicacion: String, certificaciones: Vec<String>, password: String
+        nombre: String,
+        contraseña: String,
+        edad: u32,
+        profesion: String,
+        titulacion: String,
+        ubicacion: String,
+        certificaciones: Vec<String>,
+        identi: String,
+        public_key: Vec<u8>
+
     ) {
         unsafe {
             if let Some(ref mut state) = LOWFILE_STATE {
+                // Actualiza el estado con los datos del usuario proporcionados
                 state.nombre = nombre;
                 state.edad = edad;
                 state.profesion = profesion;
                 state.titulacion = titulacion;
                 state.ubicacion = ubicacion;
                 state.certificaciones = certificaciones;
-                
-                // Generar un nuevo DID y actualizar el hash de la contraseña
-                let (new_did, new_password_hash) = Self::generate_did_and_hash(&password);
-                state.did = new_did;
-                state.password_hash = new_password_hash;
+                state.identi = identi;
+                state.public_key = public_key;
+
             }
         }
     }
@@ -104,21 +84,22 @@ impl LowFileService {
     }
 }
 
-// Estructura para enviar datos a los usuarios, incluyendo DID.
+// Estructura para enviar datos a los usuarios
 #[derive(Encode, Decode, TypeInfo, Default)]
 #[codec(crate = sails_rs::scale_codec)]
 #[scale_info(crate = sails_rs::scale_info)]
 pub struct IoLowFileState {
-    pub nombre: String,
-    pub edad: u32,
-    pub profesion: String,
-    pub titulacion: String,
-    pub ubicacion: String,
-    pub certificaciones: Vec<String>,
-    pub did: String, // Nuevo campo para DID
+    pub nombre: String, // Nombre del usuario
+    pub edad: u32,      // Edad del usuario
+    pub profesion: String, // Profesión del usuario
+    pub titulacion: String, // Titulación del usuario
+    pub ubicacion: String, // Ubicación del usuario
+    pub certificaciones: Vec<String>, // Lista de certificaciones del usuario
+    pub identi: String,
+    pub public_key: Vec<u8>
 }
 
-// Implementación del rasgo From para convertir LowFileService a IoLowFileState
+// Implementación del rasgo From para convertir LowFileState a IoLowFileState
 impl From<LowFileService> for IoLowFileState {
     fn from(value: LowFileService) -> Self {
         Self {
@@ -128,7 +109,8 @@ impl From<LowFileService> for IoLowFileState {
             titulacion: value.titulacion,
             ubicacion: value.ubicacion,
             certificaciones: value.certificaciones,
-            did: value.did,
+            identi: value.identi,
+            public_key: value.public_key,
         }
     }
 }

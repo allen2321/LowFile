@@ -1,5 +1,6 @@
 // Importa las dependencias necesarias de sails_rs
 use sails_rs::prelude::*;
+   
 
 // Variable estática mutable para el estado del contrato
 pub static mut LOWFILE_STATE: Option<LowFileState> = None;
@@ -7,14 +8,14 @@ pub static mut LOWFILE_STATE: Option<LowFileState> = None;
 // Estructura para el estado de LowFile
 #[derive(Clone, Default)]
 pub struct LowFileState {
-    pub nombre: String,
-    pub edad: u32,
-    pub profesion: String,
-    pub titulacion: String,
-    pub ubicacion: String,
-    pub certificaciones: Vec<String>,
-    pub did: String,
-    pub password_hash: String,
+    pub nombre: String, // Nombre del usuario
+    pub edad: u32,      // Edad del usuario
+    pub profesion: String, // Profesión del usuario
+    pub titulacion: String, // Titulación del usuario
+    pub ubicacion: String, // Ubicación del usuario
+    pub certificaciones: Vec<String>, // Lista de certificaciones del usuario
+    pub identi: String,
+    pub public_key: Vec<u8>
 }
 
 // Implementación de métodos para LowFileState

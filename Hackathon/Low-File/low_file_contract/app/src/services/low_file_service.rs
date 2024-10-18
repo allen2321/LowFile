@@ -16,6 +16,8 @@ pub struct LowFileService {
     pub titulacion: String, // Titulación del usuario
     pub ubicacion: String, // Ubicación del usuario
     pub certificaciones: Vec<String>, // Lista de certificaciones del usuario
+    pub password_hash: String, // Campo para almacenar la contraseña hash
+    pub did: String,          // Identificador descentralizado (DID)
 }
 
 // Implementación del servicio LowFile
@@ -30,6 +32,7 @@ impl LowFileService {
             titulacion,
             ubicacion,
             certificaciones,
+            
         }
     }
 
@@ -69,9 +72,21 @@ impl LowFileService {
             LOWFILE_STATE.as_ref().map_or(IoLowFileState::default(), |state| state.clone().into())
         }
     }
+
+    pub fn set_did(&mut self) {
+        self.did = generate_did();
+    }
+
+    pub fn set_password_hash(&mut self, password: String) {
+        self.password_hash = hash_password(password);
+    }
+
+    pub fn validate_did(&self, did: String) -> bool {
+        self.did == did
+    }
 }
 
-// Estructura para enviar datos a los usuarios
+// Estructura para enviar datos a los usuarioss
 #[derive(Encode, Decode, TypeInfo, Default)]
 #[codec(crate = sails_rs::scale_codec)]
 #[scale_info(crate = sails_rs::scale_info)]

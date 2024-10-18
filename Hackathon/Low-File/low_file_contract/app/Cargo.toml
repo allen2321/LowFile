@@ -7,3 +7,9 @@ license.workspace = true
 [dependencies]
 gstd.workspace = true
 sails-rs.workspace = true
+argon2 = "0.6.0-pre.1"
+rand_core = "0.6"
+rand = "0.8"  # Versión compatible con RngCore y OsRng
+
+
+

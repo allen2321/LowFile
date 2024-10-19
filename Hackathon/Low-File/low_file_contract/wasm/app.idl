@@ -1,22 +1,9 @@
-type IoLowFileState = struct {
-  nombre: str,
-  edad: u32,
-  profesion: str,
-  titulacion: str,
-  ubicacion: str,
-  certificaciones: vec str,
-  identi: str,
-  public_key: vec u8,
-};
-
 constructor {
   New : ();
 };
 
-service TrafficLight {
+service LowFileService {
   /// Llamada remota para establecer los datos del usuario.
-  SetUserData : (nombre: str, contraseña: str, edad: u32, profesion: str, titulacion: str, ubicacion: str, certificaciones: vec str, identi: str, public_key: vec u8) -> null;
-  /// Llamada remota para recuperar los datos del usuario.
-  query GetUserData : () -> IoLowFileState;
+  SetUserData : (nombre: str, _contraseña: str, edad: u32, profesion: str, titulacion: str, ubicacion: str, certificaciones: vec str, identi: str, public_key: vec u8, email: str, nickname: str) -> null;
 };
 

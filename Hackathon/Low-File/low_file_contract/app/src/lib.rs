@@ -30,18 +30,18 @@ impl LowFileProgram {
     // necesita ser despachado a un servicio seleccionado
     #[route("LowFileService")]  // Ajustado a LowFileService
     pub fn low_file_svc(&self) -> LowFileService {
-        LowFileService::new(
-            "".to_string(), 
-            "".to_string(), 
-            0, 
-            "".to_string(), 
-            "".to_string(), 
-            "".to_string(), 
-            Vec::new(),
-            "".to_string(), 
-            "".to_string().into(),
-            "".to_string(),
-            "".to_string(),
-        )
+            LowFileService::new(
+                "".to_string(), 
+                "".to_string(), 
+                0, 
+                "".to_string(), 
+                Vec::new(),
+                "".to_string(), 
+                "".to_string(),
+                "".to_string(),
+                "".to_string(),
+            )
+        }
+    
     }
-}
+

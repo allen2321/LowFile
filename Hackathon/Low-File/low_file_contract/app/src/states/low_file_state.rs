@@ -24,21 +24,21 @@ pub struct LowFileState {
 // Implementación de métodos para LowFileState
 
 impl LowFileState {
-    /// Método para inicializar el estado global de LowFile.
+    // Método para inicializar el estado global de LowFile.
     pub fn init_state() {
         unsafe {
             LOWFILE_STATE = Some(Self::default());
         };
     }
 
-    /// Método para obtener una referencia mutable al estado.
+    // Método para obtener una referencia mutable al estado.
     pub fn state_mut() -> &'static mut LowFileState {
         let state = unsafe { LOWFILE_STATE.as_mut() };
         debug_assert!(state.is_some(), "El estado no está inicializado");
         unsafe { state.unwrap_unchecked() }
     }
 
-    /// Método para obtener una referencia inmutable al estado.
+    // Método para obtener una referencia inmutable al estado.
     pub fn state_ref() -> &'static LowFileState {
         let state = unsafe { LOWFILE_STATE.as_ref() };
         debug_assert!(state.is_some(), "El estado no está inicializado");

@@ -3,7 +3,7 @@ constructor {
 };
 
 service LowFileService {
-  /// Llamada remota para establecer los datos del usuario.
+  // Llamada remota para establecer los datos del usuario.
   SetUserData : (nombre: str, _contraseña: str, edad: u32, profesion: str, titulacion: str, ubicacion: str, certificaciones: vec str, identi: str, public_key: vec u8, email: str, nickname: str) -> null;
 };
 

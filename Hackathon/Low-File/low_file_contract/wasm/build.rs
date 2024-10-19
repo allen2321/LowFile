@@ -21,12 +21,15 @@ fn main() {
         .expect("Fallo al generar la IDL");
 
     // Si deseas generar el cliente del contrato, descomenta esta sección
-    /*
+    
     ClientGenerator::from_idl_path(&idl_path)
         .generate_to(client_path.clone())
         .expect("Fallo al generar el cliente");
-    */
+    
 
     // Copiar el cliente al directorio actual donde se encuentra "Cargo.toml"
-   
+     // Then, copies the client that is in the OUT_DIR path in the current directory (wasm), where the 
+    //"Cargo.toml" file is located 
+        fs::copy(client_path, cargo_toml_path.join("app_client.rs"))
+            .unwrap();
 }

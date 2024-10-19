@@ -53,7 +53,7 @@ impl<R> TrafficLight<R> {
 }
 impl<R: Remoting + Clone> traits::TrafficLight for TrafficLight<R> {
     type Args = R::Args;
-    /// Llamada remota para establecer los datos del usuario.
+    // Llamada remota para establecer los datos del usuario.
     fn set_user_data(
         &mut self,
         nombre: String,
@@ -75,7 +75,7 @@ impl<R: Remoting + Clone> traits::TrafficLight for TrafficLight<R> {
             ),
         )
     }
-    /// Llamada remota para recuperar los datos del usuario.
+    // Llamada remota para recuperar los datos del usuario.
     fn get_user_data(&self) -> impl Query<Output = IoLowFileState, Args = R::Args> {
         RemotingAction::<_, traffic_light::io::GetUserData>::new(self.remoting.clone(), ())
     }

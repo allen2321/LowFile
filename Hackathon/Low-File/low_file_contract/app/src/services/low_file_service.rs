@@ -4,7 +4,7 @@ use sails_rs::{
     gstd::msg
 };
 
-// Variable estática mutable para el estado del ontrato
+// Variable estática mutable para el estado del contrato
 pub static mut LOWFILE_STATE: Option<LowFileService> = None;
 
 // Estructura para el estado de LowFile
@@ -17,8 +17,8 @@ pub struct LowFileService {
     pub titulacion: String, // Titulación del usuario
     pub ubicacion: String, // Ubicación del usuario
     pub certificaciones: Vec<String>, // Lista de certificaciones del usuario
-    pub identi: String, //Añade un identificador
-    pub public_key: Vec<u8>, //Añade un vector
+    pub identi: String, // Añade un identificador
+    pub public_key: Vec<u8>, // Añade un vector
     pub nickname: String,
     pub email: String,
 }
@@ -26,8 +26,8 @@ pub struct LowFileService {
 // Implementación del servicio LowFile
 #[service]
 impl LowFileService {
-    /// Constructor del servicio LowFile.
-    pub fn new(nombre: String, contraseña: String, edad: u32, profesion: String, titulacion: String, ubicacion: String, certificaciones: Vec<String>, identi: String, public_key: Vec<u8>, nickname:String, email:String) -> Self {
+    // Constructor del servicio LowFile.
+    pub fn new(nombre: String, contraseña: String, edad: u32, profesion: String, titulacion: String, ubicacion: String, certificaciones: Vec<String>, identi: String, public_key: Vec<u8>) -> Self {
         Self {
             nombre,
             contraseña,
@@ -38,22 +38,23 @@ impl LowFileService {
             certificaciones,
             identi,
             public_key,
-            nickname,
-            email,
+            nickname: String::new(),
+            email: String::new(),
         }
     }
 
-    /// Método para inicializar el estado global de LowFile.
+    // Método para inicializar el estado global de LowFile.
     pub fn init_state() {
         unsafe {
             LOWFILE_STATE = Some(LowFileService::default());
         };
     }
 
-    /// Llamada remota para establecer los datos del usuario.
+    // Llamada remota para establecer los datos del usuario.
     pub fn set_user_data(
         &mut self,
         nombre: String,
+        contraseña: String,
         _contraseña: String,
         edad: u32,
         profesion: String,
@@ -62,10 +63,8 @@ impl LowFileService {
         certificaciones: Vec<String>,
         identi: String,
         public_key: Vec<u8>,
-        email:String,
-        nickname:String,
-
-
+        email: String,
+        nickname: String,
     ) {
         unsafe {
             if let Some(ref mut state) = LOWFILE_STATE {
@@ -80,14 +79,16 @@ impl LowFileService {
                 state.public_key = public_key;
                 state.email = email;
                 state.nickname = nickname;
-
-                
-
             }
         }
     }
 
-
+    // Llamada remota para recuperar los datos del usuario.
+    pub fn get_user_data(&self) -> IoLowFileState {
+        unsafe {
+            LOWFILE_STATE.as_ref().map_or(IoLowFileState::default(), |state| state.clone().into())
+        }
+    }
 }
 
 // Estructura para enviar datos a los usuarios
@@ -101,6 +102,7 @@ pub struct IoLowFileState {
     pub titulacion: String, // Titulación del usuario
     pub ubicacion: String, // Ubicación del usuario
     pub certificaciones: Vec<String>, // Lista de certificaciones del usuario
+    pub identi: String,
     pub public_key: Vec<u8>,
     pub email: String,
     pub nickname: String,
@@ -116,6 +118,7 @@ impl From<LowFileService> for IoLowFileState {
             titulacion: value.titulacion,
             ubicacion: value.ubicacion,
             certificaciones: value.certificaciones,
+            identi: value.identi,
             public_key: value.public_key,
             email: value.email,
             nickname: value.nickname,

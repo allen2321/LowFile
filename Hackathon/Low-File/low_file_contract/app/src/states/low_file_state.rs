@@ -1,5 +1,5 @@
 // Importa las dependencias necesarias de sails_rs
-use sails_rs::prelude::*;
+use sails_rs::{prelude::*,gstd::msg};
    
 
 // Variable estática mutable para el estado del contrato

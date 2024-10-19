@@ -19,13 +19,15 @@ pub struct LowFileService {
     pub certificaciones: Vec<String>, // Lista de certificaciones del usuario
     pub identi: String, //Añade un identificador
     pub public_key: Vec<u8>, //Añade un vector
+    pub nickname: String,
+    pub email: String,
 }
 
 // Implementación del servicio LowFile
 #[service]
 impl LowFileService {
     /// Constructor del servicio LowFile.
-    pub fn new(nombre: String, contraseña: String, edad: u32, profesion: String, titulacion: String, ubicacion: String, certificaciones: Vec<String>, identi: String, public_key: Vec<u8>) -> Self {
+    pub fn new(nombre: String, contraseña: String, edad: u32, profesion: String, titulacion: String, ubicacion: String, certificaciones: Vec<String>, identi: String, public_key: Vec<u8>, nickname:String, email:String) -> Self {
         Self {
             nombre,
             contraseña,
@@ -36,6 +38,8 @@ impl LowFileService {
             certificaciones,
             identi,
             public_key,
+            nickname,
+            email,
         }
     }
 
@@ -50,14 +54,17 @@ impl LowFileService {
     pub fn set_user_data(
         &mut self,
         nombre: String,
-        contraseña: String,
+        _contraseña: String,
         edad: u32,
         profesion: String,
         titulacion: String,
         ubicacion: String,
         certificaciones: Vec<String>,
         identi: String,
-        public_key: Vec<u8>
+        public_key: Vec<u8>,
+        email:String,
+        nickname:String,
+
 
     ) {
         unsafe {
@@ -71,17 +78,16 @@ impl LowFileService {
                 state.certificaciones = certificaciones;
                 state.identi = identi;
                 state.public_key = public_key;
+                state.email = email;
+                state.nickname = nickname;
+
+                
 
             }
         }
     }
 
-    /// Llamada remota para recuperar los datos del usuario.
-    pub fn get_user_data(&self) -> IoLowFileState {
-        unsafe {
-            LOWFILE_STATE.as_ref().map_or(IoLowFileState::default(), |state| state.clone().into())
-        }
-    }
+
 }
 
 // Estructura para enviar datos a los usuarios
@@ -95,8 +101,9 @@ pub struct IoLowFileState {
     pub titulacion: String, // Titulación del usuario
     pub ubicacion: String, // Ubicación del usuario
     pub certificaciones: Vec<String>, // Lista de certificaciones del usuario
-    pub identi: String,
-    pub public_key: Vec<u8>
+    pub public_key: Vec<u8>,
+    pub email: String,
+    pub nickname: String,
 }
 
 // Implementación del rasgo From para convertir LowFileState a IoLowFileState
@@ -109,8 +116,9 @@ impl From<LowFileService> for IoLowFileState {
             titulacion: value.titulacion,
             ubicacion: value.ubicacion,
             certificaciones: value.certificaciones,
-            identi: value.identi,
             public_key: value.public_key,
+            email: value.email,
+            nickname: value.nickname,
         }
     }
 }

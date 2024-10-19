@@ -9,13 +9,16 @@ pub static mut LOWFILE_STATE: Option<LowFileState> = None;
 #[derive(Clone, Default)]
 pub struct LowFileState {
     pub nombre: String, // Nombre del usuario
+    pub nickname: String,
+    pub email: String,
     pub edad: u32,      // Edad del usuario
     pub profesion: String, // Profesión del usuario
     pub titulacion: String, // Titulación del usuario
     pub ubicacion: String, // Ubicación del usuario
     pub certificaciones: Vec<String>, // Lista de certificaciones del usuario
     pub identi: String,
-    pub public_key: Vec<u8>
+    pub public_key: Vec<u8>,
+    pub private_key: Vec<u8>,
 }
 
 // Implementación de métodos para LowFileState

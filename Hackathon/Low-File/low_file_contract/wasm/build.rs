@@ -24,12 +24,13 @@ fn main() {
         .unwrap();
 
     // Generator of the clients of the contract
-    ClientGenerator::from_idl_path(&idl_path)
+    /*ClientGenerator::from_idl_path(&idl_path)
         .generate_to(client_path.clone())
-        .unwrap();
+        .unwrap();*/
 
     // Then, copies the client that is in the OUT_DIR path in the current directory (wasm), where the 
     // "Cargo.toml" file is located 
-    fs::copy(client_path, cargo_toml_path.join("app_client.rs"))
-        .unwrap();
+    //fs::copy(client_path, cargo_toml_path.join("app_client.rs"))
+    //    .unwrap();
 }
+*

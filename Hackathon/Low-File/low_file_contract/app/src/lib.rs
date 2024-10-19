@@ -8,7 +8,7 @@ pub mod states;
 pub mod services;
 
 // Import service to be used for the program
-use services::low_file_service::LowFileService;
+use services::traffic_light_service::LowFileService;
 
 // Traffic light program struct to build the program (there can only be one per contract)
 pub struct TrafficLightProgram;
@@ -34,6 +34,6 @@ impl TrafficLightProgram {
     // (if omitted, the method name will be used, in this case TrafficLightSvc).
     #[route("TrafficLight")]
     pub fn traffic_light_svc(&self) -> LowFileService {
-        LowFileService::new("".to_string(), "".to_string(), 0, "".to_string(), "".to_string(), "".to_string(), Vec::new(),"".to_string(), Vec::new())
+        LowFileService::new("".to_string(), "".to_string(), 0, "".to_string(), "".to_string(), "".to_string(), Vec::new(),"".to_string(), Vec::new(),"".to_string(),"".to_string())
     }
 }

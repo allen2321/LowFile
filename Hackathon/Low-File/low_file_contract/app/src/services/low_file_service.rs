@@ -61,8 +61,36 @@ impl LowFileService {
         public_key: Vec<u8>,
         email: String,
         nickname: String,
-    ) {
-        unsafe {
+    ) ->String{
+        let state = unsafe{LOWFILE_STATE.as_mut()};
+        if state.is_none() {
+            unsafe{LOWFILE_STATE = Some(LowFileService{
+                nombre: nombre.clone(), // Nombre del usuario
+                edad: edad.clone(),      // Edad del usuario
+                profesion: profesion.clone(), // Profesión del usuario
+                titulacion: titulacion.clone(), // Titulación del usuario
+                ubicacion: ubicacion.clone(), // Ubicación del usuario
+                certificaciones: certificaciones.clone(), // Lista de certificaciones del usuario
+                identi: identi.clone(), // Añade un identificador
+                public_key: public_key.clone(), // Añade un vector
+                nickname: nickname.clone(),
+                email: email.clone(),
+
+            })}
+        }
+        
+        let state = unsafe{LOWFILE_STATE.as_mut().unwrap()};
+                state.nombre = nombre;
+                state.edad = edad;
+                state.profesion = profesion;
+                state.titulacion = titulacion;
+                state.ubicacion = ubicacion;
+                state.certificaciones = certificaciones;
+                state.identi = identi;
+                state.public_key = public_key;
+                state.email = email;
+                state.nickname = nickname;
+        /*unsafe {
             if let Some(ref mut state) = LOWFILE_STATE {
                 // Actualiza el estado con los datos del usuario proporcionados
                 state.nombre = nombre;
@@ -76,7 +104,8 @@ impl LowFileService {
                 state.email = email;
                 state.nickname = nickname;
             }
-        }
+        }*/
+        String::from("STATE CHANGED")
     }
 
     // Llamada remota para recuperar los datos del usuario.

@@ -43,17 +43,16 @@ pub mod app_factory {
         }
     }
 }
-pub struct TrafficLight<R> {
+pub struct LowFileService<R> {
     remoting: R,
 }
-impl<R> TrafficLight<R> {
+impl<R> LowFileService<R> {
     pub fn new(remoting: R) -> Self {
         Self { remoting }
     }
 }
-impl<R: Remoting + Clone> traits::TrafficLight for TrafficLight<R> {
+impl<R: Remoting + Clone> traits::LowFileService for LowFileService<R> {
     type Args = R::Args;
-    // Llamada remota para establecer los datos del usuario.
     fn set_user_data(
         &mut self,
         nombre: String,
@@ -62,8 +61,12 @@ impl<R: Remoting + Clone> traits::TrafficLight for TrafficLight<R> {
         titulacion: String,
         ubicacion: String,
         certificaciones: Vec<String>,
+        identi: String,
+        public_key: Vec<u8>,
+        email: String,
+        nickname: String,
     ) -> impl Call<Output = (), Args = R::Args> {
-        RemotingAction::<_, traffic_light::io::SetUserData>::new(
+        RemotingAction::<_, low_file_service::io::SetUserData>::new(
             self.remoting.clone(),
             (
                 nombre,
@@ -72,16 +75,19 @@ impl<R: Remoting + Clone> traits::TrafficLight for TrafficLight<R> {
                 titulacion,
                 ubicacion,
                 certificaciones,
+                identi,
+                public_key,
+                email,
+                nickname,
             ),
         )
     }
-    // Llamada remota para recuperar los datos del usuario.
     fn get_user_data(&self) -> impl Query<Output = IoLowFileState, Args = R::Args> {
-        RemotingAction::<_, traffic_light::io::GetUserData>::new(self.remoting.clone(), ())
+        RemotingAction::<_, low_file_service::io::GetUserData>::new(self.remoting.clone(), ())
     }
 }
 
-pub mod traffic_light {
+pub mod low_file_service {
     use super::*;
 
     pub mod io {
@@ -97,6 +103,10 @@ pub mod traffic_light {
                 titulacion: String,
                 ubicacion: String,
                 certificaciones: Vec<String>,
+                identi: String,
+                public_key: Vec<u8>,
+                email: String,
+                nickname: String,
             ) -> Vec<u8> {
                 <SetUserData as ActionIo>::encode_call(&(
                     nombre,
@@ -105,15 +115,30 @@ pub mod traffic_light {
                     titulacion,
                     ubicacion,
                     certificaciones,
+                    identi,
+                    public_key,
+                    email,
+                    nickname,
                 ))
             }
         }
         impl ActionIo for SetUserData {
             const ROUTE: &'static [u8] = &[
-                48, 84, 114, 97, 102, 102, 105, 99, 76, 105, 103, 104, 116, 44, 83, 101, 116, 85,
-                115, 101, 114, 68, 97, 116, 97,
+                56, 76, 111, 119, 70, 105, 108, 101, 83, 101, 114, 118, 105, 99, 101, 44, 83, 101,
+                116, 85, 115, 101, 114, 68, 97, 116, 97,
             ];
-            type Params = (String, u32, String, String, String, Vec<String>);
+            type Params = (
+                String,
+                u32,
+                String,
+                String,
+                String,
+                Vec<String>,
+                String,
+                Vec<u8>,
+                String,
+                String,
+            );
             type Reply = ();
         }
         pub struct GetUserData(());
@@ -125,8 +150,8 @@ pub mod traffic_light {
         }
         impl ActionIo for GetUserData {
             const ROUTE: &'static [u8] = &[
-                48, 84, 114, 97, 102, 102, 105, 99, 76, 105, 103, 104, 116, 44, 71, 101, 116, 85,
-                115, 101, 114, 68, 97, 116, 97,
+                56, 76, 111, 119, 70, 105, 108, 101, 83, 101, 114, 118, 105, 99, 101, 44, 71, 101,
+                116, 85, 115, 101, 114, 68, 97, 116, 97,
             ];
             type Params = ();
             type Reply = super::IoLowFileState;
@@ -143,6 +168,10 @@ pub struct IoLowFileState {
     pub titulacion: String,
     pub ubicacion: String,
     pub certificaciones: Vec<String>,
+    pub identi: String,
+    pub public_key: Vec<u8>,
+    pub email: String,
+    pub nickname: String,
 }
 
 pub mod traits {
@@ -156,7 +185,7 @@ pub mod traits {
     }
 
     #[allow(clippy::type_complexity)]
-    pub trait TrafficLight {
+    pub trait LowFileService {
         type Args;
         fn set_user_data(
             &mut self,
@@ -166,6 +195,10 @@ pub mod traits {
             titulacion: String,
             ubicacion: String,
             certificaciones: Vec<String>,
+            identi: String,
+            public_key: Vec<u8>,
+            email: String,
+            nickname: String,
         ) -> impl Call<Output = (), Args = Self::Args>;
         fn get_user_data(&self) -> impl Query<Output = IoLowFileState, Args = Self::Args>;
     }

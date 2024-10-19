@@ -11,7 +11,6 @@ pub static mut LOWFILE_STATE: Option<LowFileService> = None;
 #[derive(Clone, Default)]
 pub struct LowFileService {
     pub nombre: String, // Nombre del usuario
-    pub contraseña: String, // Contraseña
     pub edad: u32,      // Edad del usuario
     pub profesion: String, // Profesión del usuario
     pub titulacion: String, // Titulación del usuario
@@ -27,10 +26,9 @@ pub struct LowFileService {
 #[service]
 impl LowFileService {
     // Constructor del servicio LowFile.
-    pub fn new(nombre: String, contraseña: String, edad: u32, profesion: String, titulacion: String, ubicacion: String, certificaciones: Vec<String>, identi: String, public_key: Vec<u8>) -> Self {
+    pub fn new(nombre: String, edad: u32, profesion: String, titulacion: String, ubicacion: String, certificaciones: Vec<String>, identi: String, public_key: Vec<u8>) -> Self {
         Self {
             nombre,
-            contraseña,
             edad,
             profesion,
             titulacion,
@@ -54,8 +52,6 @@ impl LowFileService {
     pub fn set_user_data(
         &mut self,
         nombre: String,
-        contraseña: String,
-        _contraseña: String,
         edad: u32,
         profesion: String,
         titulacion: String,

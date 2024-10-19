@@ -16,7 +16,7 @@ constructor {
 };
 
 service LowFileService {
-  SetUserData : (nombre: str, contraseña: str, _contraseña: str, edad: u32, profesion: str, titulacion: str, ubicacion: str, certificaciones: vec str, identi: str, public_key: vec u8, email: str, nickname: str) -> null;
+  SetUserData : (nombre: str, edad: u32, profesion: str, titulacion: str, ubicacion: str, certificaciones: vec str, identi: str, public_key: vec u8, email: str, nickname: str) -> null;
   query GetUserData : () -> IoLowFileState;
 };
 

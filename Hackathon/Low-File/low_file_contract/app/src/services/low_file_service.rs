@@ -17,7 +17,7 @@ pub struct LowFileService {
     pub ubicacion: String, // Ubicación del usuario
     pub certificaciones: Vec<String>, // Lista de certificaciones del usuario
     pub identi: String, // Añade un identificador
-    pub public_key: Vec<u8>, // Añade un vector
+    pub public_key: Vec<u128>, // Añade un vector
     pub nickname: String,
     pub email: String,
 }

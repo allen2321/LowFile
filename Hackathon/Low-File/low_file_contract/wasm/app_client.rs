@@ -62,10 +62,11 @@ impl<R: Remoting + Clone> traits::LowFileService for LowFileService<R> {
         ubicacion: String,
         certificaciones: Vec<String>,
         identi: String,
-        public_key: Vec<u8>,
+        public_key: Vec<u128>,
         email: String,
         nickname: String,
-    ) -> impl Call<Output = (), Args = R::Args> {
+        private_key: Vec<u128>,
+    ) -> impl Call<Output = String, Args = R::Args> {
         RemotingAction::<_, low_file_service::io::SetUserData>::new(
             self.remoting.clone(),
             (
@@ -79,6 +80,7 @@ impl<R: Remoting + Clone> traits::LowFileService for LowFileService<R> {
                 public_key,
                 email,
                 nickname,
+                private_key,
             ),
         )
     }
@@ -104,9 +106,10 @@ pub mod low_file_service {
                 ubicacion: String,
                 certificaciones: Vec<String>,
                 identi: String,
-                public_key: Vec<u8>,
+                public_key: Vec<u128>,
                 email: String,
                 nickname: String,
+                private_key: Vec<u128>,
             ) -> Vec<u8> {
                 <SetUserData as ActionIo>::encode_call(&(
                     nombre,
@@ -119,6 +122,7 @@ pub mod low_file_service {
                     public_key,
                     email,
                     nickname,
+                    private_key,
                 ))
             }
         }
@@ -135,11 +139,12 @@ pub mod low_file_service {
                 String,
                 Vec<String>,
                 String,
-                Vec<u8>,
+                Vec<u128>,
                 String,
                 String,
+                Vec<u128>,
             );
-            type Reply = ();
+            type Reply = String;
         }
         pub struct GetUserData(());
         impl GetUserData {
@@ -169,7 +174,8 @@ pub struct IoLowFileState {
     pub ubicacion: String,
     pub certificaciones: Vec<String>,
     pub identi: String,
-    pub public_key: Vec<u8>,
+    pub public_key: Vec<u128>,
+    pub private_key: Vec<u128>,
     pub email: String,
     pub nickname: String,
 }
@@ -196,10 +202,11 @@ pub mod traits {
             ubicacion: String,
             certificaciones: Vec<String>,
             identi: String,
-            public_key: Vec<u8>,
+            public_key: Vec<u128>,
             email: String,
             nickname: String,
-        ) -> impl Call<Output = (), Args = Self::Args>;
+            private_key: Vec<u128>,
+        ) -> impl Call<Output = String, Args = Self::Args>;
         fn get_user_data(&self) -> impl Query<Output = IoLowFileState, Args = Self::Args>;
     }
 }

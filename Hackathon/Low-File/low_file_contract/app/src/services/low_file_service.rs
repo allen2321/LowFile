@@ -20,13 +20,14 @@ pub struct LowFileService {
     pub public_key: Vec<u128>, // Añade un vector
     pub nickname: String,
     pub email: String,
+    pub private_key: Vec<u128>
 }
 
 // Implementación del servicio LowFile
 #[service]
 impl LowFileService {
     // Constructor del servicio LowFile.
-    pub fn new(nombre: String, edad: u32, profesion: String, titulacion: String, ubicacion: String, certificaciones: Vec<String>, identi: String, public_key: Vec<u8>) -> Self {
+    pub fn new(nombre: String, edad: u32, profesion: String, titulacion: String, ubicacion: String, certificaciones: Vec<String>, identi: String, public_key: Vec<u128>, private_key: Vec<u128>) -> Self {
         Self {
             nombre,
             edad,
@@ -38,6 +39,7 @@ impl LowFileService {
             public_key,
             nickname: String::new(),
             email: String::new(),
+            private_key,
         }
     }
 
@@ -58,9 +60,10 @@ impl LowFileService {
         ubicacion: String,
         certificaciones: Vec<String>,
         identi: String,
-        public_key: Vec<u8>,
+        public_key: Vec<u128>,
         email: String,
         nickname: String,
+        private_key: Vec<u128>
     ) ->String{
         let state = unsafe{LOWFILE_STATE.as_mut()};
         if state.is_none() {
@@ -75,6 +78,7 @@ impl LowFileService {
                 public_key: public_key.clone(), // Añade un vector
                 nickname: nickname.clone(),
                 email: email.clone(),
+                private_key: private_key.clone()
 
             })}
         }
@@ -90,6 +94,7 @@ impl LowFileService {
                 state.public_key = public_key;
                 state.email = email;
                 state.nickname = nickname;
+                state.private_key = private_key;
         /*unsafe {
             if let Some(ref mut state) = LOWFILE_STATE {
                 // Actualiza el estado con los datos del usuario proporcionados
@@ -128,7 +133,8 @@ pub struct IoLowFileState {
     pub ubicacion: String, // Ubicación del usuario
     pub certificaciones: Vec<String>, // Lista de certificaciones del usuario
     pub identi: String,
-    pub public_key: Vec<u8>,
+    pub public_key: Vec<u128>,
+    pub private_key: Vec<u128>,
     pub email: String,
     pub nickname: String,
 }
@@ -147,6 +153,7 @@ impl From<LowFileService> for IoLowFileState {
             public_key: value.public_key,
             email: value.email,
             nickname: value.nickname,
+            private_key: value.private_key
         }
     }
 }

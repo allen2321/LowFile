@@ -6,7 +6,8 @@ type IoLowFileState = struct {
   ubicacion: str,
   certificaciones: vec str,
   identi: str,
-  public_key: vec u8,
+  public_key: vec u128,
+  private_key: vec u128,
   email: str,
   nickname: str,
 };
@@ -16,7 +17,7 @@ constructor {
 };
 
 service LowFileService {
-  SetUserData : (nombre: str, edad: u32, profesion: str, titulacion: str, ubicacion: str, certificaciones: vec str, identi: str, public_key: vec u8, email: str, nickname: str) -> null;
+  SetUserData : (nombre: str, edad: u32, profesion: str, titulacion: str, ubicacion: str, certificaciones: vec str, identi: str, public_key: vec u128, email: str, nickname: str, private_key: vec u128) -> str;
   query GetUserData : () -> IoLowFileState;
 };
 

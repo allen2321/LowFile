@@ -17,8 +17,8 @@ pub struct LowFileState {
     pub ubicacion: String, // Ubicación del usuario
     pub certificaciones: Vec<String>, // Lista de certificaciones del usuario
     pub identi: String,
-    pub public_key: Vec<u8>,
-    pub private_key: Vec<u8>,
+    pub public_key: Vec<u128>,
+    pub private_key: Vec<u128>,
 }
 
 // Implementación de métodos para LowFileState
